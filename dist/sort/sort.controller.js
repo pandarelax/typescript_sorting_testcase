@@ -119,9 +119,11 @@ let SortController = class SortController {
     getMean() {
         const pageViewMeans = this.sortService.calcPageViewMean(mockProducts);
         const productsWithSums = this.sortService.calcStock(mockProducts);
+        const conversionRateMeans = this.sortService.calcConversionRateMean(mockProducts);
         return {
             pageViewMeans,
             productsWithSums,
+            conversionRateMeans,
         };
     }
 };

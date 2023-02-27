@@ -10,6 +10,7 @@ type Variant = {
   name: string;
   stock: number;
   pageView?: number;
+  refundRate?: number;
   conversionRate?: number;
 };
 
@@ -25,7 +26,7 @@ export class SortService {
     // TODO: dear candidate, please implement this method
   }
 
-  // calculates stock for each variants with same name *broken*
+  //* Calculates stock sums for each variant with same name like white / small : ... */
   calculateVariantStockSums(products: Product[]): any {
     const variantStockSums = {};
     products.forEach((product) => {
@@ -41,7 +42,9 @@ export class SortService {
     return variantStockSums;
   }
 
-  // Calculates pageview means for each product
+  //* ------------------- */
+
+  //* Calculates pageViews means for each product returns object */
   calculateVariantPageViewMean(products: Product[]): any {
     const productPageViewMean = {};
     products.forEach((product) => {
@@ -61,6 +64,52 @@ export class SortService {
     return sum / pageViews.length;
   }
 
+  //* ------------------- */
+
+  //* Calculates conversionRates means for each product returns object */
+  calculateVariantConversionRateMean(products: Product[]): any {
+    const productConversionRateMean = {};
+    products.forEach((product) => {
+      const key = `${product.name}'s conversion rate mean is:`;
+      if (!productConversionRateMean[key]) {
+        const conversionRates = product.variants.map((v) => v.conversionRate);
+        const mean = this.calcPageView(conversionRates);
+        productConversionRateMean[key] = mean;
+      }
+    });
+
+    return productConversionRateMean;
+  }
+
+  calcConversionRate(conversionRates: number[]): number {
+    const sum = conversionRates.reduce((a, b) => a + b, 0);
+    return sum / conversionRates.length;
+  }
+
+  //* ------------------- */
+
+  //* Calculates refundRates means for each product returns object */
+  calculateVariantRefundRateMean(products: Product[]): any {
+    const productRefundRateMean = {};
+    products.forEach((product) => {
+      const key = `${product.name}'s refund rate mean is:`;
+      if (!productRefundRateMean[key]) {
+        const refundRates = product.variants.map((v) => v.refundRate);
+        const mean = this.calcPageView(refundRates);
+        productRefundRateMean[key] = mean;
+      }
+    });
+
+    return productRefundRateMean;
+  }
+
+  calcRefundRate(refundRates: number[]): number {
+    const sum = refundRates.reduce((a, b) => a + b, 0);
+    return sum / refundRates.length;
+  }
+
+  //* ------------------- */
+
   //* Calculates all stocks sum */
   // calcStock(products: Product[]) {
   //   let stocks: number[] = [];
@@ -74,6 +123,7 @@ export class SortService {
   //   return stocks.reduce((a, b) => a + b, 0);
   // }
 
+  //* Calculates all stocks sum */
   calcStock(products: Product[]) {
     const stockSums: number[] = [];
 
@@ -103,7 +153,7 @@ export class SortService {
   //   return sum / pageViews.length;
   // }
 
-  // Calculates all pageviews means for each product and returns an array of means
+  //* Calculates all pageViews mean */
   calcPageViewMean(products: Product[]) {
     const pageViewMeans: number[] = [];
 
@@ -117,6 +167,39 @@ export class SortService {
     });
 
     return pageViewMeans;
+  }
+
+  //* Calculates all conversionRates mean */
+  calcConversionRateMean(products: Product[]) {
+    const conversionRatesMeans: number[] = [];
+
+    products.forEach((product) => {
+      let conversionRates: number[] = [];
+      product.variants.forEach((variant) => {
+        conversionRates.push(variant.conversionRate);
+      });
+      const mean =
+        conversionRates.reduce((a, b) => a + b, 0) / conversionRates.length;
+      conversionRatesMeans.push(mean);
+    });
+
+    return conversionRatesMeans;
+  }
+
+  //* Calculates all refundRates mean */
+  calcRefundRatesMean(products: Product[]) {
+    const refundRateMeans: number[] = [];
+
+    products.forEach((product) => {
+      let refundRates: number[] = [];
+      product.variants.forEach((variant) => {
+        refundRates.push(variant.refundRate);
+      });
+      const mean = refundRates.reduce((a, b) => a + b, 0) / refundRates.length;
+      refundRateMeans.push(mean);
+    });
+
+    return refundRateMeans;
   }
 
   private formulaForVariantField(fieldName) {

@@ -40,6 +40,38 @@ let SortService = class SortService {
         const sum = pageViews.reduce((a, b) => a + b, 0);
         return sum / pageViews.length;
     }
+    calculateVariantConversionRateMean(products) {
+        const productConversionRateMean = {};
+        products.forEach((product) => {
+            const key = `${product.name}'s conversion rate mean is:`;
+            if (!productConversionRateMean[key]) {
+                const conversionRates = product.variants.map((v) => v.conversionRate);
+                const mean = this.calcPageView(conversionRates);
+                productConversionRateMean[key] = mean;
+            }
+        });
+        return productConversionRateMean;
+    }
+    calcConversionRate(conversionRates) {
+        const sum = conversionRates.reduce((a, b) => a + b, 0);
+        return sum / conversionRates.length;
+    }
+    calculateVariantRefundRateMean(products) {
+        const productRefundRateMean = {};
+        products.forEach((product) => {
+            const key = `${product.name}'s refund rate mean is:`;
+            if (!productRefundRateMean[key]) {
+                const refundRates = product.variants.map((v) => v.refundRate);
+                const mean = this.calcPageView(refundRates);
+                productRefundRateMean[key] = mean;
+            }
+        });
+        return productRefundRateMean;
+    }
+    calcRefundRate(refundRates) {
+        const sum = refundRates.reduce((a, b) => a + b, 0);
+        return sum / refundRates.length;
+    }
     calcStock(products) {
         const stockSums = [];
         products.forEach((product) => {
@@ -63,6 +95,30 @@ let SortService = class SortService {
             pageViewMeans.push(mean);
         });
         return pageViewMeans;
+    }
+    calcConversionRateMean(products) {
+        const conversionRatesMeans = [];
+        products.forEach((product) => {
+            let conversionRates = [];
+            product.variants.forEach((variant) => {
+                conversionRates.push(variant.conversionRate);
+            });
+            const mean = conversionRates.reduce((a, b) => a + b, 0) / conversionRates.length;
+            conversionRatesMeans.push(mean);
+        });
+        return conversionRatesMeans;
+    }
+    calcRefundRatesMean(products) {
+        const refundRateMeans = [];
+        products.forEach((product) => {
+            let refundRates = [];
+            product.variants.forEach((variant) => {
+                refundRates.push(variant.refundRate);
+            });
+            const mean = refundRates.reduce((a, b) => a + b, 0) / refundRates.length;
+            refundRateMeans.push(mean);
+        });
+        return refundRateMeans;
     }
     formulaForVariantField(fieldName) {
         switch (fieldName) {

@@ -7,6 +7,7 @@ type Variant = {
     name: string;
     stock: number;
     pageView?: number;
+    refundRate?: number;
     conversionRate?: number;
 };
 type SortingFormula = {
@@ -19,8 +20,14 @@ export declare class SortService {
     calculateVariantStockSums(products: Product[]): any;
     calculateVariantPageViewMean(products: Product[]): any;
     calcPageView(pageViews: number[]): number;
+    calculateVariantConversionRateMean(products: Product[]): any;
+    calcConversionRate(conversionRates: number[]): number;
+    calculateVariantRefundRateMean(products: Product[]): any;
+    calcRefundRate(refundRates: number[]): number;
     calcStock(products: Product[]): number[];
     calcPageViewMean(products: Product[]): number[];
+    calcConversionRateMean(products: Product[]): number[];
+    calcRefundRatesMean(products: Product[]): number[];
     private formulaForVariantField;
 }
 export {};
