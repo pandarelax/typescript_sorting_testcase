@@ -92,7 +92,6 @@ const mockSortingFormula = [
   {
     operator: "mul",
     name: "fixedValue",
-    value: 3,
   },
   {
     operator: "div",
@@ -108,15 +107,22 @@ export class SortController {
 
   @Get()
   getMean(): any {
-    const pageViewMeans = this.sortService.calcPageViewMean(mockProducts);
-    const productsWithSums = this.sortService.calcStock(mockProducts);
-    const conversionRateMeans =
-      this.sortService.calcConversionRateMean(mockProducts);
+    // const pageViewMeans = this.sortService.calcPageViewMean(mockProducts);
+    // const productsWithSums = this.sortService.calcStock(mockProducts);
+    // const conversionRateMeans =
+    //   this.sortService.calcConversionRateMean(mockProducts);
+    // const sortedProducts = this.sortService.sortProducts(
+    //   mockProducts,
+    //   mockSortingFormula
+    // );
+    const stats = this.sortService.calculateProductStats(mockProducts);
 
     return {
-      pageViewMeans,
-      productsWithSums,
-      conversionRateMeans,
+      // pageViewMeans,
+      // productsWithSums,
+      // conversionRateMeans,
+      // sortedProducts,
+      stats,
     };
   }
 }

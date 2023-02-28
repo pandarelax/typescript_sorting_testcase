@@ -105,7 +105,6 @@ const mockSortingFormula = [
     {
         operator: "mul",
         name: "fixedValue",
-        value: 3,
     },
     {
         operator: "div",
@@ -117,13 +116,9 @@ let SortController = class SortController {
         this.sortService = sortService;
     }
     getMean() {
-        const pageViewMeans = this.sortService.calcPageViewMean(mockProducts);
-        const productsWithSums = this.sortService.calcStock(mockProducts);
-        const conversionRateMeans = this.sortService.calcConversionRateMean(mockProducts);
+        const stats = this.sortService.calculateProductStats(mockProducts);
         return {
-            pageViewMeans,
-            productsWithSums,
-            conversionRateMeans,
+            stats,
         };
     }
 };

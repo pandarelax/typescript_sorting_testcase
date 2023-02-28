@@ -9,80 +9,102 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.SortService = void 0;
 const common_1 = require("@nestjs/common");
 let SortService = class SortService {
-    sortProducts(products, sortingFormula) {
+    sortProducts(products, sortingFormulas) {
+        const sortedProducts = [];
     }
-    calculateVariantStockSums(products) {
-        const variantStockSums = {};
-        products.forEach((product) => {
-            product.variants.forEach((variant) => {
-                const key = `${variant.name}'s stock score is:`;
-                if (!variantStockSums[key]) {
-                    variantStockSums[key] = 0;
-                }
-                variantStockSums[key] += variant.stock;
-            });
-        });
-        return variantStockSums;
+    getVariantValue(variant, name) {
+        if (name === "fixedValue:3") {
+            return 3;
+        }
+        return variant[name];
     }
-    calculateVariantPageViewMean(products) {
-        const productPageViewMean = {};
+    calculateVariantStockSums(products, results) {
         products.forEach((product) => {
-            const key = `${product.name}'s page view mean is:`;
-            if (!productPageViewMean[key]) {
-                const pageViews = product.variants.map((v) => v.pageView);
-                const mean = this.calcPageView(pageViews);
-                productPageViewMean[key] = mean;
+            const key = `${product.name}'s stock score is`;
+            if (!results[key]) {
+                const stocks = product.variants.map((v) => v.stock);
+                const sum = stocks.reduce((a, b) => a + b, 0);
+                results[key] = sum;
             }
         });
-        return productPageViewMean;
+    }
+    calculateVariantPageViewMean(products, results) {
+        products.forEach((product) => {
+            const key = `${product.name}'s page view mean is`;
+            if (!results[key]) {
+                const pageViews = product.variants.map((v) => v.pageView);
+                const mean = this.calcPageView(pageViews);
+                results[key] = mean;
+            }
+        });
+    }
+    calculateVariantConversionRateMean(products, results) {
+        products.forEach((product) => {
+            const key = `${product.name}'s conversion rate mean is`;
+            if (!results[key]) {
+                const conversionRates = product.variants.map((v) => v.conversionRate);
+                const mean = this.calcPageView(conversionRates);
+                results[key] = mean;
+            }
+        });
+    }
+    calculateVariantRefundRateMean(products, results) {
+        products.forEach((product) => {
+            const key = `${product.name}'s refund rate mean is`;
+            if (!results[key]) {
+                const refundRates = product.variants.map((v) => v.refundRate);
+                const mean = this.calcPageView(refundRates);
+                results[key] = mean;
+            }
+        });
+    }
+    calculateProductStats(products) {
+        const results = [];
+        this.calculateVariantStockSums(products, results);
+        this.calculateVariantPageViewMean(products, results);
+        this.calculateVariantConversionRateMean(products, results);
+        this.calculateVariantRefundRateMean(products, results);
+        const stats = Object.entries(results).reduce((acc, [key, value]) => {
+            const [product, statType] = key.split("'s ");
+            const statObj = acc.find((obj) => obj[product]);
+            if (statObj) {
+                statObj[product][statType] = value;
+            }
+            else {
+                acc.push({ [product]: { [statType]: value } });
+            }
+            return acc;
+        }, []);
+        return stats;
     }
     calcPageView(pageViews) {
         const sum = pageViews.reduce((a, b) => a + b, 0);
         return sum / pageViews.length;
     }
-    calculateVariantConversionRateMean(products) {
-        const productConversionRateMean = {};
-        products.forEach((product) => {
-            const key = `${product.name}'s conversion rate mean is:`;
-            if (!productConversionRateMean[key]) {
-                const conversionRates = product.variants.map((v) => v.conversionRate);
-                const mean = this.calcPageView(conversionRates);
-                productConversionRateMean[key] = mean;
-            }
-        });
-        return productConversionRateMean;
-    }
     calcConversionRate(conversionRates) {
         const sum = conversionRates.reduce((a, b) => a + b, 0);
         return sum / conversionRates.length;
-    }
-    calculateVariantRefundRateMean(products) {
-        const productRefundRateMean = {};
-        products.forEach((product) => {
-            const key = `${product.name}'s refund rate mean is:`;
-            if (!productRefundRateMean[key]) {
-                const refundRates = product.variants.map((v) => v.refundRate);
-                const mean = this.calcPageView(refundRates);
-                productRefundRateMean[key] = mean;
-            }
-        });
-        return productRefundRateMean;
     }
     calcRefundRate(refundRates) {
         const sum = refundRates.reduce((a, b) => a + b, 0);
         return sum / refundRates.length;
     }
     calcStock(products) {
-        const stockSums = [];
+        let stocks = [];
         products.forEach((product) => {
-            let stockValues = [];
             product.variants.forEach((variant) => {
-                stockValues.push(variant.stock);
+                stocks.push(variant.stock);
             });
-            const sum = stockValues.reduce((a, b) => a + b, 0);
-            stockSums.push(sum);
         });
-        return stockSums;
+        return stocks.reduce((a, b) => a + b, 0);
+    }
+    calculateStock(products, results) {
+        const totalStock = products.reduce((acc, curr) => {
+            return acc + curr.variants.reduce((acc2, curr2) => acc2 + curr2.stock, 0);
+        }, 0);
+        const key = "total stock is";
+        const value = totalStock;
+        results.push({ key, value });
     }
     calcPageViewMean(products) {
         const pageViewMeans = [];
