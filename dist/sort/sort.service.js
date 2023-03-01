@@ -18,19 +18,21 @@ let SortService = class SortService {
         }
         return variant[name];
     }
-    calculateVariantStockSums(products, results) {
+    calculateVrStockSums(products) {
         products.forEach((product) => {
-            const key = `${product.name}'s stock score is`;
-            if (!results[key]) {
-                const stocks = product.variants.map((v) => v.stock);
-                const sum = stocks.reduce((a, b) => a + b, 0);
-                results[key] = sum;
-            }
+            let stockSum = 0;
+            const sum = product.variants.reduce((acc, variant) => {
+                stockSum += variant.stock;
+                return stockSum;
+            }, 0);
+            console.log("sum", sum);
+            console.log(product.variants.map((v) => v.stock));
+            return sum;
         });
     }
     calculateVariantPageViewMean(products, results) {
         products.forEach((product) => {
-            const key = `${product.name}'s page view mean is`;
+            const key = product.name + "'s pageView";
             if (!results[key]) {
                 const pageViews = product.variants.map((v) => v.pageView);
                 const mean = this.calcPageView(pageViews);
@@ -40,7 +42,7 @@ let SortService = class SortService {
     }
     calculateVariantConversionRateMean(products, results) {
         products.forEach((product) => {
-            const key = `${product.name}'s conversion rate mean is`;
+            const key = product.name + "'s conversionRate";
             if (!results[key]) {
                 const conversionRates = product.variants.map((v) => v.conversionRate);
                 const mean = this.calcPageView(conversionRates);
@@ -50,7 +52,7 @@ let SortService = class SortService {
     }
     calculateVariantRefundRateMean(products, results) {
         products.forEach((product) => {
-            const key = `${product.name}'s refund rate mean is`;
+            const key = product.name + "'s refundRate";
             if (!results[key]) {
                 const refundRates = product.variants.map((v) => v.refundRate);
                 const mean = this.calcPageView(refundRates);
@@ -58,9 +60,16 @@ let SortService = class SortService {
             }
         });
     }
+    finalStockScore(products) {
+        const finalScore = this.calculateProductStats(products);
+        const amazingTshirt = finalScore.find((product) => {
+            Object.keys(product).includes("Amazing Tshirt");
+            return product;
+        });
+        return amazingTshirt;
+    }
     calculateProductStats(products) {
         const results = [];
-        this.calculateVariantStockSums(products, results);
         this.calculateVariantPageViewMean(products, results);
         this.calculateVariantConversionRateMean(products, results);
         this.calculateVariantRefundRateMean(products, results);

@@ -3,6 +3,7 @@ type Product = {
     price: number;
     variants: Variant[];
     fixedValue?: number;
+    sortingScore?: number;
 };
 type Variant = {
     name: string;
@@ -19,10 +20,11 @@ type SortingFormula = {
 export declare class SortService {
     sortProducts(products: Product[], sortingFormulas: SortingFormula[]): void;
     getVariantValue(variant: Variant, name: string): number;
-    calculateVariantStockSums(products: Product[], results: any[]): void;
+    calculateVrStockSums(products: Product[]): any;
     calculateVariantPageViewMean(products: Product[], results: any[]): void;
     calculateVariantConversionRateMean(products: Product[], results: any[]): void;
     calculateVariantRefundRateMean(products: Product[], results: any[]): void;
+    finalStockScore(products: Product[]): any;
     calculateProductStats(products: Product[]): any;
     calcPageView(pageViews: number[]): number;
     calcConversionRate(conversionRates: number[]): number;

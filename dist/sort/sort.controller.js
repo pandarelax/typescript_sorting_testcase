@@ -116,9 +116,9 @@ let SortController = class SortController {
         this.sortService = sortService;
     }
     getMean() {
-        const stats = this.sortService.calculateProductStats(mockProducts);
+        const stockSum = this.sortService.calculateVrStockSums(mockProducts);
         return {
-            stats,
+            stockSum,
         };
     }
 };
